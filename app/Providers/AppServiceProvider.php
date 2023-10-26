@@ -8,6 +8,12 @@ use App\Repositories\ForgotPassword\ForgotPasswordRepository;
 use App\Repositories\ForgotPassword\ForgotPasswordRepositoryImplement;
 use App\Repositories\SendEmail\SendEmailRepositoryImplement;
 use App\Repositories\SendEmail\SendEmailRepository;
+use App\Repositories\SuperAdmin\Permission\HasPermissionSuperAdminRepository;
+use App\Repositories\SuperAdmin\Permission\HasPermissionSuperAdminRepositoryImplement;
+use App\Repositories\SuperAdmin\Role\HasRoleSuperAdminRepository;
+use App\Repositories\SuperAdmin\Role\HasRoleSuperAdminRepositoryImplement;
+use App\Repositories\SuperAdmin\User\UserSuperAdminRepository;
+use App\Repositories\SuperAdmin\User\UserSuperAdminRepositoryImplement;
 use App\Repositories\Test\TestRepository;
 use App\Repositories\Test\TestRepositoryImplement;
 use App\Services\Auth\AuthService;
@@ -16,6 +22,8 @@ use App\Services\ForgotPassword\ForgotPasswordService;
 use App\Services\ForgotPassword\ForgotPasswordServiceImplement;
 use App\Services\SendEmail\SendEmailServiceImplement;
 use App\Services\SendEmail\SendEmailService;
+use App\Services\SuperAdmin\User\UserSuperAdminService;
+use App\Services\SuperAdmin\User\UserSuperAdminServiceImplement;
 use App\Services\Test\TestService;
 use App\Services\Test\TestServiceImplement;
 use Illuminate\Support\Facades\Schema;
@@ -39,6 +47,13 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ForgotPasswordService::class, ForgotPasswordServiceImplement::class);
         $this->app->bind(ForgotPasswordRepository::class, ForgotPasswordRepositoryImplement::class);
+
+        $this->app->bind(UserSuperAdminService::class, UserSuperAdminServiceImplement::class);
+        $this->app->bind(UserSuperAdminRepository::class, UserSuperAdminRepositoryImplement::class);
+
+        $this->app->bind(HasRoleSuperAdminRepository::class, HasRoleSuperAdminRepositoryImplement::class);
+
+        $this->app->bind(HasPermissionSuperAdminRepository::class, HasPermissionSuperAdminRepositoryImplement::class);
     }
 
     /**

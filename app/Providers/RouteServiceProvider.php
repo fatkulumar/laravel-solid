@@ -47,6 +47,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('forgot-password')
                 ->group(base_path('routes/forgotPassword.php'));
+
+            Route::middleware('api')
+                ->prefix('super-admin')
+                ->group(base_path('routes/superAdmin/userSuperAdmin.php'));
         });
     }
 }

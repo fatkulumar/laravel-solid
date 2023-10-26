@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('model_has_roles', function (Blueprint $table) {
+        Schema::table('model_has_permissions', function (Blueprint $table) {
             $table->uuid('model_id')->change();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('model_has_roles', function (Blueprint $table) {
+        Schema::table('model_has_permissions', function (Blueprint $table) {
             Schema::dropIfExists('model_id');
         });
     }

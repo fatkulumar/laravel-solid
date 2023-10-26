@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('model_has_roles', function (Blueprint $table) {
-            $table->uuid('model_id')->change();
+        Schema::table('model_has_permissions', function (Blueprint $table) {
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('model_has_roles', function (Blueprint $table) {
-            Schema::dropIfExists('model_id');
+        Schema::table('model_has_permissions', function (Blueprint $table) {
+            $table->dropColumn('created_at');
+            $table->dropColumn('updated_at');
         });
     }
 };

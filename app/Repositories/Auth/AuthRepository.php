@@ -4,5 +4,5 @@
 
     interface AuthRepository
     {
-        //
+        public function getByIdUser($id);
     }

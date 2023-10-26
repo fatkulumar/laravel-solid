@@ -21,7 +21,7 @@ class TestController extends Controller
         // $this->middleware(['role:admin'])->only('index');
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $result = $this->testService->all();
         return $result;
@@ -53,7 +53,7 @@ class TestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
         $test = new TestDTO;
         $test->setId($id);

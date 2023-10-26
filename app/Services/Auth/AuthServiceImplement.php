@@ -3,15 +3,18 @@
     namespace App\Services\Auth;
 
     use App\DataTransferObject\UserDTO;
-    use App\Http\Resources\Auth\AuthResource;
     use App\Repositories\Auth\AuthRepository;
+    use App\Repositories\SuperAdmin\User\UserSuperAdminRepository;
     use App\Services\Service;
     use App\Services\Auth\AuthService;
     use Illuminate\Http\JsonResponse;
     use App\Traits\EntityValidator;
     use App\Traits\ResultService;
     use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Log;
+    use Spatie\Permission\Models\Permission;
+    use Spatie\Permission\Models\Role;
 
     class AuthServiceImplement extends Service implements AuthService
     {
@@ -19,15 +22,20 @@
         use ResultService;
         use EntityValidator;
 
-        protected $mainRepository;
+        private $mainRepository,
+                $userSuperAdminRepository;
 
-        public function __construct(AuthRepository $mainRepository)
+        public function __construct(AuthRepository $mainRepository,
+                                    UserSuperAdminRepository $userSuperAdminRepository
+                                    )
         {
             $this->mainRepository = $mainRepository;
+            $this->userSuperAdminRepository = $userSuperAdminRepository;
         }
 
         public function register(UserDTO $params): JsonResponse
         {
+            DB::beginTransaction();
             try {
                 $validasiData = $this->registerValidator($params);
                 if ($this->code != 200) {
@@ -41,21 +49,31 @@
                 ];
 
                 $data = $this->mainRepository->create($saveData);
-
-                // $token = $data->createToken('auth_token', ['list-test'])->plainTextToken;
                 $token = $data->createToken('auth_token')->plainTextToken;
 
-                $dataResource = new AuthResource($data);
+                $roles = $params->getRole();
+                foreach($roles as $role) {
+                        $roleSpatie = Role::findOrCreate($role, $params->getGuardName());
+                        $data->assignRole($roleSpatie);
+                }
+                $permissions = $params->getPermission();
+                foreach($permissions as $permission) {
+                    $permissionSpatie = Permission::findOrCreate($permission, $params->getGuardName());
+                    $data->givePermissionTo($permissionSpatie);
+                }
+                DB::commit();
+                $dataRegister = $this->userSuperAdminRepository->userByEmail($params->getEmail());
 
                 return response()->json([
                     'success' => true,
                     'code' => JsonResponse::HTTP_OK,
                     'message' => 'Data Berhasil Ditambahkan',
-                    'data' => $dataResource,
+                    'data' => $dataRegister,
                     'token' => $token
                 ], JsonResponse::HTTP_OK);
 
             } catch (\Exception $exception) {
+                DB::rollBack();
                 $this->exceptionResponse($exception);
                 $errors['message'] = $exception->getMessage();
                 $errors['file'] = $exception->getFile();
@@ -132,13 +150,13 @@
 
                 $token = $data->createToken('auth_token')->plainTextToken;
 
-                $dataResource = new AuthResource($data);
+                $dataLogin = $this->userSuperAdminRepository->userByEmail($params->getEmail());
 
                 return response()->json([
                     'success' => true,
                     'code' => JsonResponse::HTTP_OK,
                     'message' => 'Berhasil Login',
-                    'data' => $dataResource,
+                    'data' => $dataLogin,
                     'token' => $token
                 ], JsonResponse::HTTP_OK);
 

@@ -14,4 +14,10 @@
         {
             $this->model = $model;
         }
+
+        public function getByIdUser($id)
+        {
+            $data = $this->model::find($id);
+            return $data;
+        }
     }

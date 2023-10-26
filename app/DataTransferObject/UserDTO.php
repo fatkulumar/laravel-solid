@@ -9,7 +9,11 @@
         private $id,
                 $name,
                 $email,
-                $password;
+                $password,
+                $role,
+                $permission,
+                $guardName,
+                $modelId;
 
         public function getId()
         {
@@ -49,6 +53,46 @@
         public function setPassword($password)
         {
             return $this->password = $password;
+        }
+
+        public function getRole()
+        {
+            return $this->role;
+        }
+
+        public function setRole($role)
+        {
+            return $this->role = $role;
+        }
+
+        public function getPermission()
+        {
+            return $this->permission;
+        }
+
+        public function setPermission($permission)
+        {
+            return $this->permission = $permission;
+        }
+
+        public function getGuardName()
+        {
+            return $this->guardName;
+        }
+
+        public function setGuardName($guardName)
+        {
+            return $this->guardName = $guardName;
+        }
+
+        public function getModelId()
+        {
+            return $this->modelId;
+        }
+
+        public function setModelId($modelId)
+        {
+            return $this->modelId = $modelId;
         }
     }
 

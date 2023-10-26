@@ -210,7 +210,6 @@ use Illuminate\Support\Facades\Log;
                 if ($this->code != 200) {
                     return $validasiData;
                 }
-
                 $id = $params->getId();
                 $data = $this->mainRepository->getById($id);
                 if(!$data) {
@@ -220,27 +219,22 @@ use Illuminate\Support\Facades\Log;
                     ->setCode(JsonResponse::HTTP_NOT_FOUND);
                     return $this->toJson();
                 }
-
                 $file = $params->getFile();
                 $this->fileSettings();
                 $upload = $this->uploadFile($file);
                 $this->deleteFile($data->foto);
-
                 $updateData = [
                     'test' => clean($params->getTest()),
                     'foto' => $upload,
                 ];
-
-                $data = $this->mainRepository->update($id, $updateData);
-
+                $this->mainRepository->update($id, $updateData);
+                $data = $this->mainRepository->getById($id);
                 $dataResource = new TestResource($data);
-
                 $this->setResult($dataResource)
                     ->setStatus(true)
                     ->setMessage('Data Berhasil Diupdate')
                     ->setCode(JsonResponse::HTTP_OK);
                 return $this->toJson();
-
             } catch (\Exception $exception) {
                 $this->exceptionResponse($exception);
                 $errors['message'] = $exception->getMessage();
