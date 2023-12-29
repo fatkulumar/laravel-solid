@@ -14,7 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [AuthController::class, 'notAuthorized'])->name('login');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['guest'])->group(function () {
+
+    Route::get('/', [AuthController::class, 'notAuthorized'])->name('login');
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+
+});
+
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');

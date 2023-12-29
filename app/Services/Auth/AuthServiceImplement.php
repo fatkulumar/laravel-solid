@@ -49,7 +49,6 @@
                 ];
 
                 $data = $this->mainRepository->create($saveData);
-                $token = $data->createToken('auth_token')->plainTextToken;
 
                 $roles = $params->getRole();
                 foreach($roles as $role) {
@@ -67,9 +66,8 @@
                 return response()->json([
                     'success' => true,
                     'code' => JsonResponse::HTTP_OK,
-                    'message' => 'Data Berhasil Ditambahkan',
-                    'data' => $dataRegister,
-                    'token' => $token
+                    'message' => 'Berhasil Register',
+                    'data' => $dataRegister[0],
                 ], JsonResponse::HTTP_OK);
 
             } catch (\Exception $exception) {
@@ -156,7 +154,7 @@
                     'success' => true,
                     'code' => JsonResponse::HTTP_OK,
                     'message' => 'Berhasil Login',
-                    'data' => $dataLogin,
+                    'data' => $dataLogin[0],
                     'token' => $token
                 ], JsonResponse::HTTP_OK);
 
@@ -215,9 +213,8 @@
         public function logout(UserDTO $params): JsonResponse
         {
             try {
-
-                auth()->user()->currentAccessToken()->delete();
-
+                auth()->user()->tokens()->delete();
+                Auth::guard('web')->logout();
                 $this->setResult(null)
                     ->setStatus(true)
                     ->setMessage('Berhasil Logout')
